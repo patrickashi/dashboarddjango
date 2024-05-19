@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>User Profile</h1>
+
+    
+{% if user.student.profile_photo %}
+    <img src="{{ user.student.profile_photo.url }}" alt="Profile Photo" class="img-thumbnail" style="width: 100px; height: 100px; border-radius: 300px; object-fit: cover;">
+{% else %}
+    <p>No profile photo.</p>
+{% endif %}
+
+<h1>{{ user.username }}</h1>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ profile_form.as_p }}
+    <button type="submit">Update Photo</button>
+</form>
+
+<p>username: {{ user.username }}</p>
+<p>Email: {{ user.email }}</p>
+<p>School Name: {{ user.profile.school_name }}</p>
+<p>Favorite Subject: {{ user.profile.favorite_subject }}</p>
+<!-- Add any other fields you want to display -->
+
+<a href="{% url 'update_profile' %}" class="btn btn-primary mt-3">Update Profile</a>
+
+
+
+{% endblock %}
+
+
+<!-- profile.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {% load static %}
+    <title>Profile</title>
+    <!-- <link rel="stylesheet" href="{% static 'dashboard/profile.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+</head>
+<body>
+
+    <!-- navigation.html -->
+    <nav class="navbar">
+        
+        <ul class="navbar-menu">
+            <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'profile' %}">Profile</a></li>
+            {% if user.is_authenticated %}
+                <li>
+                    <form method="POST" action="{% url 'logout' %}" class="logout-form">
+                        {% csrf_token %}
+                        <button type="submit" class="logout-button">Logout</button>
+                    </form>
+                </li>
+            {% else %}
+                <li><a href="{% url 'login' %}">Login</a></li>
+                <li><a href="{% url 'register' %}">Register</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    
+  
+
+
+</body>
+</html>

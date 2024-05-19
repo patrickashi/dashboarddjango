@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Sales Data</title>
+
+    {% load static %}
+    
+    <link rel="stylesheet" href="{% static 'css/forms_style.css' %}">
+    
+</head>
+<body>
+    <h1>Add Sales Data</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Sales Data</button>
+    </form>
+</body>
+</html>

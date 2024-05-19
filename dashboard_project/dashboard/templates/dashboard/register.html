@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {% load static %}
+    <title>Register</title>
+    <link rel="stylesheet" href="{% static 'css/register_style.css' %}">
+</head>
+<body>
+    <div class="register-container">
+        <h1> Register</h1>
+        
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            {{ profile_form.as_p }}
+            <!-- {{ student_form.as_p }} -->
+            <button type="submit">Register</button>
+            <p>Have an account? <a href="{% url 'login' %}">Login</a></p>
+        </form>
+    </div>
+</body>
+</html>
