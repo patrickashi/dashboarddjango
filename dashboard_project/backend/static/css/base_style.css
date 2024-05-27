@@ -1,0 +1,171 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #007bff;
+    color: #ffffff;
+    padding: 15px 0;
+    text-align: center;
+}
+.profile-photo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px; /* Adjust as needed */
+}
+
+h1 {
+    color: white;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 24px;
+    color: white;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #333;
+    color: #fff;
+    height: 100vh;
+    padding: 20px;
+    position: fixed;
+    transition: transform 0.3s ease;
+}
+
+.sidebar h2 {
+    text-align: center;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    padding: 10px;
+    text-align: center;
+}
+
+.sidebar ul li a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+}
+
+.sidebar ul li a:hover {
+    background-color: #575757;
+}
+
+
+.sidebar-footer {
+    padding: 10px;
+    text-align: center;
+}
+
+.sidebar-footer a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.sidebar-footer a:hover {
+    text-decoration: underline;
+    color: skyblue;
+}
+
+.reminder {
+    text-align: center;
+}
+
+
+
+.content {
+    margin-left: 500px;
+    padding: 20px;
+    width: calc(100% - 250px);
+}
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+footer {
+    background-color: #343a40;
+    color: #ffffff;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+footer p {
+    margin: 0;
+}
+
+
+
+/* custom.css */
+.sidebar {
+    width: 250px;
+    background-color: #f0f0f0;
+    transition: transform 0.3s ease;
+}
+
+.sidebar-hidden {
+    transform: translateX(-100%);
+}
+
+.container {
+    transition: margin-left 0.3s ease;
+}
+
+.container-expanded {
+    margin-left: 250px; /* Adjust this value to match your sidebar width */
+}
+
+.toggle-button {
+    display: block; /* Initially hide the toggle button */
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 999;
+    background-color: transparent;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
+}
+
+/* Style the toggle button icon when the sidebar is hidden */
+.toggle-button.sidebar-hidden {
+    color: #fff; /* Change color to white when sidebar is hidden */
+}
+
+
+/* Media query for mobile breakpoint */
+@media (max-width: 768px) { /* Adjust breakpoint as needed */
+    .toggle-button {
+        display: block; /* Show toggle button on smaller screens */
+    }
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    .container {
+        margin-left: 0;
+    }
+}
+
+
+
+

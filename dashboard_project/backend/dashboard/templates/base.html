@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Dashboard{% endblock %}</title>
+    <!-- <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> -->
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
+
+    
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon" />
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/base_style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard_style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- Include Bootstrap Icons CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet"> 
+
+</head>
+<body>
+        <div class="sidebar"  id="sidebar">
+            {% if user.student.profile_photo %}
+                <div class="profile-photo-container">
+                    <img src="{{ user.student.profile_photo.url }}" alt="Profile Photo" class="img-thumbnail" style="width: 60px; height: 60px; border-radius: 300px; object-fit: cover; ">
+                </div>
+            {% else %}
+                <p>No profile photo.</p>
+            {% endif %}
+
+        <h2 style="color: white; display: flex; justify-content: center;">{{ user.username }}</h1>
+        
+        <ul>
+            <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'profile' %}">Profile</a></li>
+            <li><a href="{% url 'submit_feedback' %}">Submit Feedback</a></li>
+            <li><a href="{% url 'view_feedback' %}">View Feedback</a></li>
+            <li><a href="{% url 'payment_form' %}">Make Payment</a></li>
+
+            <li>
+                <a href="{% url 'notifications' %}" class="nav-link">
+                    <i class="bi bi-bell"></i>
+                    {% if unread_count > 0 %}
+                        <span class="badge badge-pill badge-danger" id="notification-badge">{{ unread_count }}</span>
+                    {% else %}
+                        <span class="badge badge-pill badge-danger" id="notification-badge" style="display: none;">0</span>
+                    {% endif %}
+                </a>
+            </li>
+            
+
+
+
+
+            <li>
+                <form method="POST" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-button">Logout</button>
+                </form>
+            </li>
+        </ul>
+
+       
+
+        <div class="sidebar-footer">
+            <a href="#" target="_blank">Back to Website</a>
+            
+        </div>
+
+        
+
+    </div>
+    
+
+    
+    <div id="container" class="container mt-4">
+        <button  id="toggle-button" class="toggle-button">☰</button>
+        {% block content %}
+        {% endblock %}
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script src="{% static 'js/dashboard_script.js' %}"></script>
+
+    <script src="{% static 'js/notifications.js' %}"></script>
+
+    <script>
+
+    //     function fetchUnreadNotifications() {
+    //         fetch('{% url "get_unread_notifications" %}')
+    //             .then(response => response.json())
+    //             .then(data => {
+    //                 const badge = document.getElementById('notification-badge');
+    //                 if (data.unread_count > 0) {
+    //                     badge.style.display = 'inline';
+    //                     badge.textContent = data.unread_count;
+    //                 } else {
+    //                     badge.style.display = 'none';
+    //                 }
+    //             });
+    //     }
+
+    //     setInterval(fetchUnreadNotifications, 5000); // Check every 5 seconds
+    //     fetchUnreadNotifications(); // Initial check
+    // </script>
+</body>
+</html>

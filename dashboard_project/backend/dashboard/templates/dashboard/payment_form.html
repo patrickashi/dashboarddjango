@@ -1,0 +1,13 @@
+<!-- templates/payment_form.html -->
+{% extends 'base.html' %}
+
+{% block title %}Make a Payment{% endblock %}
+
+{% block content %}
+<h2>Make a Payment</h2>
+<form method="POST" action="{% url 'payment_form' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Pay Now</button>
+</form>
+{% endblock %}

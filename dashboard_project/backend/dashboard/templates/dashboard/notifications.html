@@ -1,0 +1,29 @@
+<!-- notifications.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Notifications</h2>
+    <ul id="notification-list">
+        {% for notification in notifications %}
+            <li>
+                {{ notification.message }} <br>
+                <button onclick="markAsRead({{ notification.id }})">Mark as Read</button>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<script>
+    function markAsRead(notificationId) {
+        fetch(`/notifications/mark-as-read/${notificationId}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    fetchUnreadNotifications();
+                    location.reload(); // Reload to update the list
+                }
+            });
+    }
+</script>
+{% endblock %}
