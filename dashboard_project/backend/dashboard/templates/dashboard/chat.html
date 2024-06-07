@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <p style="text-align: center;" class="text-green-500">OSOTECH CHATROOM</p>
+    <div id="chat-log" class="border p-3" style="height: 400px; overflow-y: scroll;">
+        <!-- Messages will be appended here dynamically -->
+    </div>
+    <input id="chat-message-input" type="text" class="form-control mt-3" placeholder="Type your message here...">
+    <button id="chat-message-submit" class="btn btn-primary mt-2">Send</button>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    const socketUrl = 'ws://' + window.location.host + '/ws/chat/';
+    console.log('WebSocket URL:', socketUrl);  // Debugging line
+
+    const chatSocket = socketUrl;
+
+    chatSocket.onopen = function(event) {
+        console.log('WebSocket is open now.');
+
+    };
+
+    chatSocket.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        console.log('WebSocket message received:', data.message);
+    };
+
+    chatSocket.onclose = function(event) {
+        if (event.wasClean) {
+            console.log('WebSocket connection closed cleanly.');
+        } else {
+            console.error('WebSocket connection closed unexpectedly.');
+        }
+        console.log('WebSocket close code:', event.code);
+        console.log('WebSocket close reason:', event.reason);
+    };
+
+    chatSocket.onerror = function(event) {
+        console.error('WebSocket error observed:', event);
+    };
+
+    document.getElementById('chat-message-submit').addEventListener('click', function() {
+        if (chatSocket.readyState === WebSocket.OPEN) {
+        const messageInputDom = document.getElementById('message-input');
+        const message = messageInputDom.value;
+        chatSocket.send(JSON.stringify({
+            'message': message
+        }));
+        messageInputDom.value = '';
+        } else {
+            console.error('WebSocket connection is not open.');
+        }
+
+    });
+});
+</script>
+
+
+
+{% endblock %}

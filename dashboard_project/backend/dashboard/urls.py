@@ -32,6 +32,13 @@ urlpatterns = [
     
     path('notifications/unread_count/', views.get_unread_notification_count, name='unread_notification_count'),
     
+    path('discussion/', views.discussion_board_list, name='discussion_board_list'),
+    path('board/<int:pk>/', views.discussion_board_detail, name='discussion_board_detail'),
+    path('board/<int:board_pk>/post/<int:post_pk>/', views.post_detail, name='post_detail'),
+    path('board/<int:board_pk>/new_post/', views.new_post, name='new_post'),
+    
+    path('chat/', views.chat, name='chat'),
+    
     
 ]
 

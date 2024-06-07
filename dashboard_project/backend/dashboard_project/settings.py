@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'dashboard',
     'corsheaders',
+    'channels',
 ]
 
 
@@ -82,6 +83,17 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'dashboard_project.wsgi.application'
+ASGI_APPLICATION = 'dashboard_project.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        # 'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 
 # Database
@@ -131,9 +143,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 STATIC_ROOT = BASE_DIR / "staticfiles"  
 

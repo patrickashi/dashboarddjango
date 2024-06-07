@@ -5,6 +5,7 @@ from .models import Student
 from .models import Profile
 from .models import Feedback
 from .models import Payment
+from .models import Post, Comment
 
 class RegistrationForm(UserCreationForm):
     
@@ -50,3 +51,15 @@ class PaymentForm(forms.ModelForm):
     class Meta:
         model = Payment
         fields = ['name', 'description', 'amount', 'email', 'phone_number']
+        
+        
+# Disscussionforms     
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['title', 'content']
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']

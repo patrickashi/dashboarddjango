@@ -1,7 +1,15 @@
 from django.contrib.auth.models import User
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import login
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.urls import reverse
+
+import uuid
+import logging
+
+from django.contrib.auth.decorators import user_passes_test
 
 from django.contrib import messages 
 from django.contrib.auth import authenticate, login
@@ -10,12 +18,18 @@ from .models import Profile
 from .models import Student
 from .models import Feedback
 from .models import Notification
+from .models import Payment
+from .models import DiscussionBoard, Post, Comment
+
 
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import RegistrationForm, StudentProfileForm
 from .forms import StudentRegistrationForm
 from .forms import FeedbackForm
 from .forms import StudentUpdateForm
+from .forms import PaymentForm
+from .forms import PostForm, CommentForm
+
 
 import requests
 from django.conf import settings
@@ -28,23 +42,9 @@ from django.middleware.csrf import get_token
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from .forms import PaymentForm
-from .models import Payment
-import uuid
-import logging
-
-from django.contrib.auth.decorators import user_passes_test
-
-
-
- 
 
 
 # Create your views here.
-from django.shortcuts import render, redirect
-from django.contrib.auth import login
-from .forms import RegistrationForm, StudentProfileForm
-
 def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
@@ -88,6 +88,7 @@ def custom_login(request):
 
 
 @login_required
+# feedback
 def submit_feedback(request):
     if request.method == 'POST':
         form = FeedbackForm(request.POST)
@@ -121,15 +122,6 @@ def dashboard(request):
     context = { 'username': username, 'firstname': firstname, 'student': student, 'feedbacks': feedbacks}
     return render(request, 'dashboard/dashboard.html', context)
 
-def add_sales_data(request):
-    if request.method == 'POST':
-        form = SalesDataForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('dashboard')  # Redirect to dashboard after successful form submission
-    else:
-        form = SalesDataForm()
-    return render(request, 'dashboard/add_sales.html', {'form': form})
 
 
 def register_student(request):
@@ -162,16 +154,6 @@ def profile(request):
     
     context = {'student': student, 'profile_form': profile_form}
     return render(request, 'dashboard/profile.html', context)  # Ensure this path is correct
-
-# @login_required
-# def profile(request):
-#     try:
-#         student = Student.objects.get(email=request.user.email)  # Assuming user is logged in and has a profile
-#         return render(request, 'dashboard/profile.html', {'student': student})
-#     except Student.DoesNotExist:
-#         return render(request, 'dashboard/profile_not_found.html')
-
-
 
 
 @login_required
@@ -209,6 +191,7 @@ def payment_form(request):
     return render(request, 'dashboard/payment_form.html', {'form': form})
 
 @csrf_exempt
+# processpayment
 def process_payment(request, payment_id):
     try:
         payment = Payment.objects.get(id=payment_id)
@@ -290,8 +273,9 @@ def mark_as_read(request, notification_id):
     return redirect("notifications")
 
 def get_unread_notification_count(request):
-    unread_count = Notification.objects.filter(read=False).count()
+    unread_count = Notification.objects.filter(user=request.user, read=False).count()
     return JsonResponse({'unread_count': unread_count})
+
 
 # Only allow admin users to access this view
 def admin_required(user):
@@ -309,3 +293,52 @@ def send_notification(request):
         return redirect("notifications")
 
     return render(request, "dashboard/send_notification.html")
+
+
+
+
+# discussionviews
+def discussion_board_list(request):
+    boards = DiscussionBoard.objects.all()
+    return render(request, 'dashboard/discussion_board_list.html', {'boards': boards})
+
+def discussion_board_detail(request, pk):
+    board = get_object_or_404(DiscussionBoard, pk=pk)
+    posts = Post.objects.filter(discussion_board=board)
+    return render(request, 'dashboard/discussion_board_detail.html', {'board': board, 'posts': posts})
+
+def post_detail(request, board_pk, post_pk):
+    post = get_object_or_404(Post, pk=post_pk, discussion_board_id=board_pk)
+    comments = Comment.objects.filter(post=post)
+    
+    if request.method == 'POST':
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            comment.author = request.user
+            comment.post = post
+            comment.save()
+            return redirect('dashboard/post_detail', board_pk=board_pk, post_pk=post_pk)
+    else:
+        comment_form = CommentForm()
+
+    return render(request, 'dashboard/post_detail.html', {'post': post, 'comments': comments, 'comment_form': comment_form})
+
+def new_post(request, board_pk):
+    board = get_object_or_404(DiscussionBoard, pk=board_pk)
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.discussion_board = board
+            post.save()
+            return redirect('discussion_board_detail', pk=board_pk)
+    else:
+        form = PostForm()
+    return render(request, 'dashboard/new_post.html', {'form': form})
+
+
+# chat
+def chat(request):
+    return render(request, 'dashboard/chat.html')
