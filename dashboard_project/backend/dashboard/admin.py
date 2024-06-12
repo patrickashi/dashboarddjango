@@ -8,6 +8,7 @@ from .models import Notification
 from .models import DiscussionBoard
 from .models import Post
 from .models import Comment
+from .models import Result
 
 # Register your models here.
 admin.site.register(Student)
@@ -18,6 +19,7 @@ admin.site.register(Notification)
 admin.site.register(DiscussionBoard)
 admin.site.register(Post)
 admin.site.register(Comment)
+admin.site.register(Result)
 
 #unregister groups
 admin.site.unregister(Group)

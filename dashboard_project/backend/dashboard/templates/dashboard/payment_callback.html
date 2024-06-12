@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-lg my-8 p-4 bg-white rounded shadow-md">
+    <h2 class="text-2xl font-semibold mb-4">Payment Status</h2>
+    {% if status == 'SUCCESS' %}
+        <p>Your payment was successful!</p>
+    {% elif status == 'FAILED' %}
+        <p>Your payment failed. Please try again.</p>
+    {% endif %}
+</div>
+{% endblock %}

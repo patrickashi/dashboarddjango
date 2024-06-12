@@ -1,15 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container">
-    <h2>Discussion Boards</h2>
+<div class="container bg-white rounded-lg pl-4 py-10 mt-4">
+    <h2 class="font-bold text-xl mb-6">Discussion Boards</h2>
     <ul class="list-group">
         {% for board in boards %}
             <li class="list-group-item">
-                <a href="{% url 'discussion_board_detail' pk=board.pk %}">{{ board.name }}</a>
-                <p>{{ board.description }}</p>
+                <p><span class="font-semibold">Description : </span>{{ board.description }}</p>
+                <a href="{% url 'discussion_board_detail' pk=board.pk %}" class="mb-2"><span class="font-semibold  ">Board :</span> <span class="hover:underline">{{ board.name }}</span></a>
             </li>
         {% endfor %}
     </ul>
+
+
 </div>
 {% endblock %}

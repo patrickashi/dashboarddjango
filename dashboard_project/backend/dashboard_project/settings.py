@@ -171,7 +171,44 @@ CSRF_USE_SESSIONS = True  # Ensure CSRF tokens are stored in sessions
 SESSION_COOKIE_SECURE = True  # Set to True in production with HTTPS
 
 
-FLUTTERWAVE_PUBLIC_KEY = 'FLWPUBK_TEST-d6c4b89af07ff42239c86da40e255165-X'
-FLUTTERWAVE_SECRET_KEY = 'FLWSECK_TEST-98f571a69edf39ae5f3dada7b17913c1-X'
+
+OPAY_MERCHANT_ID = '281824061140739'
+OPAY_SECRET_KEY = 'OPAYPRV17181044296430.8961471637244277'
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'debug.log'),
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'dashboard': {  # Replace 'dashboard' with the name of your app
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
 
 

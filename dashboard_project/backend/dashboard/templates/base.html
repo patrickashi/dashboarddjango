@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     {% load static %}
     <meta charset="UTF-8">
@@ -8,58 +7,20 @@
 
     <title>{% block title %}Dashboard{% endblock %}</title>
 
-    
     <link href="{% static 'css/styles.css' %}" rel="stylesheet">
-
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-
-
-    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet"> 
     <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon" />
-   
 
 </head>
 
 
-<body class="">
-    <!-- Top nav bar -->
-    <!-- <div class="top-nav-bar"  >
-        <nav class="mx-auto px-10 shadow-md">
-            <ul class="flex mx-auto justify-evenly">
-                <li>logo</li>
-                <li>
-                    <input class="border pl-4 rounded-xl" id="" placeholder="search.." >
-                </li>
+<body class="h-[100vh]">
 
-                <li>
-                    <a href="{% url 'notifications' %}" class="nav-link">
-                        <i class="bi bi-bell"></i>
-                        {% if unread_count > 0 %}
-                            <span class="badge badge-pill badge-danger" id="notification-badge">{{ unread_count }}</span>
-                        {% else %}
-                            <span class="badge badge-pill badge-danger" id="notification-badge" style="display: none;">0</span>
-                        {% endif %}
-                    </a>
-                </li>
-
-                <li>
-                    {% if user.student.profile_photo %}
-                        <div class="">
-                            <img src="{{ user.student.profile_photo.url }}" alt="Profile Photo" class="img-thumbnail" style="width: 40px; height: 40px; border-radius: 300px; object-fit: cover; margin-top: 3px; margin-bottom: 3px; margin-right: 5px; ">
-                        </div>
-                    {% else %}
-                        <p>No profile photo.</p>
-                    {% endif %}
-                </li>
-            </ul>
-        </nav>
-    </div> -->
-    <button  id="toggle-button" class="block md:hidden text-black focus:outline-none z-50 absolute top-2 right-4">☰</button>
-
+    <button  id="toggle-button" class="block md:hidden text-white focus:outline-none z-50 fixed text-xl top-20 right-0 bg-[#925FE2]  px-4 py-4 rounded-l-md">☰</button>
 <!-- sidebar and maincontent box -->
- <div class="flex h-[650px] relative">
+ <div class="flex max-h-full relative h-[100vh]">
     
-    <div id="sidebar" class=" border-r-2 h-full w-[300px] mx-6 pt-4 fixed md:static  left-[-25px] transform -translate-x-full  md:translate-x-0 transition-transform duration-200 ease-in-out bg-white "  >
+    <div id="sidebar" class="w-[300px] h-[100vh] mx-0 bg-white pt-4 fixed md:static  left-[-25px] transform -translate-x-full  md:translate-x-0 transition-transform duration-200 ease-in-out "  >
         
 
         <div class="flex justify-center cursor-pointer">
@@ -74,15 +35,15 @@
 
         </div>
 
-        <h2 class="text-blue-700 text-center  hover:text-emerald-400 cursor-pointer">{{ user.username }}</h1>
+        <h2 class=" text-center  hover:text-emerald-400 cursor-pointer animate-pulse font-bold duration-200">{{ user.username }}</h1>
     
      <ul class=" text-center">
 
-        <li class="my-4" ><a href="{% url 'dashboard' %}">Dashboard</a></li>
-        <li class="my-4"><a href="{% url 'profile' %}">Profile</a></li>
-        <li class="my-4"><a href="{% url 'submit_feedback' %}">Submit Feedback</a></li>
-        <li class="my-4"><a href="{% url 'view_feedback' %}">View Feedback</a></li>
-        <li class="my-4"><a href="{% url 'payment_form' %}">Make Payment</a></li>
+        <li class="my-4 " ><a href="{% url 'dashboard' %}" class="hover:font-semibold duration-200" >Dashboard</a></li>
+        <li class="my-4"><a href="{% url 'profile' %}" class="hover:font-semibold duration-200">Profile</a></li>
+        <li class="my-4"><a href="{% url 'submit_feedback' %}" class="hover:font-semibold duration-200">Submit Feedback</a></li>
+        <li class="my-4"><a href="{% url 'view_feedback' %}" class="hover:font-semibold duration-200">View Feedback</a></li>
+        <li class="my-4"><a href="{% url 'initiate_payment' %}" class="hover:font-semibold duration-200">Make Payment</a></li>
 
         <!-- <li>
             <a href="{% url 'notifications' %}" class="nav-link">
@@ -96,26 +57,38 @@
         </li> -->
 
         <li class="my-4">
-            <a class="nav-link" href="{% url 'discussion_board_list' %}">Discussion boards</a>
+            <a class=" hover:font-semibold duration-200" href="{% url 'discussion_board_list' %} ">Discussion boards</a>
         </li>
 
-        <li class="my-4">
-            <a class="nav-link" href="{% url 'chat' %}">Community</a>
+        <li class="my-4 ">
+            <a class="hover:font-semibold duration-200" href="{% url 'chat' %}">Community</a>
         </li>
 
-        <li class="my-4">
-            <form method="POST" action="{% url 'logout' %}">
-                {% csrf_token %}
-                <button type="submit" class="logout-button">Logout</button>
-            </form>
+        <!-- <li>
+            <a href="{% url 'upload_result' %}" class="text-blue-500 hover:text-blue-700">Upload Result</a>
+        </li> -->
+
+        <li>
+            <a href="{% url 'student_results' student_id=request.user.student.student_id %}" class="hover:font-semibold duration-200">Results</a>
         </li>
+
+        
 
         <li class="my-4"> 
-            <a href="#" target="_blank">Back to Website</a>
+            <a href="#" target="_blank" class="hover:font-semibold duration-200">Back to Website</a>
         </li>
+
+      
 
      </ul>
 
+
+     <div class="my-4 flex justify-center align-bottom">
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="hover:font-semibold duration-200">Logout</button>
+        </form>
+    </div>
    
 
 
@@ -124,7 +97,7 @@
 
 
     <!-- container -->
-    <div id="container" class="container mx-4 pt-4">
+    <div id="container" class="container px-4 pt-4 bg-emerald-50">
         <!-- nav -->
         <div class="flex justify-between">
             <div class="container  mt-4 w-40 md:w-full">
@@ -158,9 +131,9 @@
         
                 </div>
 
-                <div class="py-4 ml-2">
-                    <p class="text-sm">{{ user.first_name }}</p>
-                    <p class="text-sm">3rd year</p>
+                <div class="py-0 ml-1 text-center items-center text-xs">
+                    <p class=" font-thin">{{ user.first_name }}</p>
+                    <p class=" font-thin">3rd year</p>
                 </div>
 
             </div>

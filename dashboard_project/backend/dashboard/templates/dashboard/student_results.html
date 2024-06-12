@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ student.name }}'s Results{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl my-8 p-4 bg-white rounded shadow-md">
+    <h1 class="text-2xl font-semibold mb-4">{{ student.name }}'s Result</h1>
+    <table class="table-auto w-full">
+        <thead class="">
+            <tr class="bg-[#925FE2] text-white ">
+                <th class="px-4 py-2">Semester</th>
+                <th class="px-4 py-2">Code</th>
+                <th class="px-4 py-2">Load</th>
+                <th class="px-4 py-2">Title</th>
+                <th class="px-4 py-2">Grade</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for result in results %}
+            <tr>
+                <td class="border px-4 py-2">{{ result.semester }}</td>
+                <td class="border px-4 py-2">{{ result.code }}</td>
+                <td class="border px-4 py-2">{{ result.load }}</td>
+                <td class="border px-4 py-2">{{ result.title }}</td>
+                <td class="border px-4 py-2">{{ result.grade }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    
+</div>
+
+    <div>
+        <a href="{% url 'download_results' student_id=student.student_id %}" class="mt-20 bg-[#925FE2] hover:bg-[#855cc8] text-white px-4 py-2 rounded">Download Result</a>
+    </div>
+{% endblock %}

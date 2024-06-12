@@ -2,71 +2,56 @@
 
 {% block content %}
 
-<h3>Student Profile</h3>
+<h3 class="font-bold mt-4">Profile</h3>
+
+
+<div class="flex flex-col md:flex-row gap-8 my-6">
+
+    <div class=" w-[300px] bg-white rounded-xl py-6 px-4 cursor-pointer">
+        <div class="flex justify-center mb-4">
+            {% if user.student.profile_photo %}
+                <img src="{{ user.student.profile_photo.url }}" alt="Profile Photo" class="" style="width: 100px; height: 100px; border-radius: 300px; object-fit: cover;">
+            {% else %}
+                <p>No profile photo.</p>
+            {% endif %}
+        </div>
+        <div class="mb-6">
+            <h1 class="text-center font-semibold text-xl">{{ user.first_name }} {{ user.last_name}}</h1>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="mt-4">
+            {% csrf_token %}
+            {{ profile_form }}
+            <button type="submit" class="bg-[#925FE2] hover:bg-[#855cc8] duration-200 text-white rounded-sm mt-2 px-8 ">Save</button>
+        </form>
+    </div>
+
+    <div class="bg-white rounded-xl px-4 py-4 cursor-pointer">
+        <p class="font-bold mb-4">Information</p>
+        <p>username: {{ user.username }}</p>
+        <p>Email: {{ user.email }}</p>
+        <p>School Name: {{ user.profile.school_name }}</p>
+        <p>Favorite Subject: {{ favorite_subject }}</p>
+        <!-- Add any other fields you want to display -->
+
+        <a href="{% url 'update_profile' %}" class="btn btn-primary mt-3">Update Profile</a>
+    </div>
+
+</div>
 
     
-{% if user.student.profile_photo %}
-    <img src="{{ user.student.profile_photo.url }}" alt="Profile Photo" class="img-thumbnail" style="width: 100px; height: 100px; border-radius: 300px; object-fit: cover;">
-{% else %}
-    <p>No profile photo.</p>
-{% endif %}
 
-<h1>{{ user.username }}</h1>
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ profile_form.as_p }}
-    <button type="submit">Update Photo</button>
-</form>
 
-<p>username: {{ user.username }}</p>
-<p>Email: {{ user.email }}</p>
-<p>School Name: {{ user.profile.school_name }}</p>
-<p>Favorite Subject: {{ favorite_subject }}</p>
-<!-- Add any other fields you want to display -->
 
-<a href="{% url 'update_profile' %}" class="btn btn-primary mt-3">Update Profile</a>
+
+
 
 
 
 {% endblock %}
 
 
-<!-- profile.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    {% load static %}
-    <title>Profile</title>
-    <!-- <link rel="stylesheet" href="{% static 'dashboard/profile.css' %}"> -->
-    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
-</head>
-<body>
-
-    <!-- navigation.html -->
-    <nav class="navbar">
-        
-        <ul class="navbar-menu">
-            <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
-            <li><a href="{% url 'profile' %}">Profile</a></li>
-            {% if user.is_authenticated %}
-                <li>
-                    <form method="POST" action="{% url 'logout' %}" class="logout-form">
-                        {% csrf_token %}
-                        <button type="submit" class="logout-button">Logout</button>
-                    </form>
-                </li>
-            {% else %}
-                <li><a href="{% url 'login' %}">Login</a></li>
-                <li><a href="{% url 'register' %}">Register</a></li>
-            {% endif %}
-        </ul>
-    </nav>
-    
-  
 
 
 </body>

@@ -6,6 +6,7 @@ from .models import Profile
 from .models import Feedback
 from .models import Payment
 from .models import Post, Comment
+from .models import Result
 
 class RegistrationForm(UserCreationForm):
     
@@ -47,10 +48,8 @@ class FeedbackForm(forms.ModelForm):
         }
         
         
-class PaymentForm(forms.ModelForm):
-    class Meta:
-        model = Payment
-        fields = ['name', 'description', 'amount', 'email', 'phone_number']
+class PaymentForm(forms.Form):
+    amount = forms.DecimalField(max_digits=10, decimal_places=2)
         
         
 # Disscussionforms     
@@ -63,3 +62,8 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['content']
+        
+class ResultForm(forms.ModelForm):
+    class Meta:
+        model = Result
+        fields = ['student', 'semester', 'code', 'load', 'title', 'grade']

@@ -16,12 +16,25 @@ class Profile(models.Model):
     
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    name = models.CharField(max_length=100, null=True)
+    student_id = models.CharField(max_length=10, unique=True, null=True, blank=True)
     school_name = models.CharField(max_length=100)
     favorite_subject = models.CharField(max_length=50)
     profile_photo = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
 
     def __str__(self):
-        return self.user.username if self.user else 'No User'  
+        return self.user.username if self.user else 'No User'
+    
+class Result(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    semester = models.CharField(max_length=20)
+    code = models.CharField(max_length=10)
+    load = models.IntegerField()
+    title = models.CharField(max_length=100)
+    grade = models.CharField(max_length=2)
+
+    def __str__(self):
+        return f"{self.student.name} - {self.title}"  
     
     
     
@@ -35,17 +48,17 @@ class Feedback(models.Model):
     
 
 class Payment(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.CharField(max_length=255)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    transaction_id = models.CharField(max_length=100, unique=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    email = models.EmailField()
-    phone_number = models.CharField(max_length=15)
-    transaction_ref = models.CharField(max_length=100, unique=True)
-    status = models.CharField(max_length=20, default='pending')
+    status = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.name} - {self.amount}"
+        if self.user:
+            return f"{self.user.username} - {self.transaction_id}"
+        else:
+            return f"Unknown User - {self.transaction_id}"
     
 class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

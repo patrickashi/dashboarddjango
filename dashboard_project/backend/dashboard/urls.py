@@ -20,10 +20,9 @@ urlpatterns = [
     
     path('update-profile/', views.update_profile, name='update_profile'),
     
-    path('make-payment/', views.payment_form, name='payment_form'),
-    path('process-payment/<int:payment_id>/', views.process_payment, name='process_payment'),
-    path('payment-success/', views.payment_success, name='payment_success'),
-    path('payment-failure/', views.payment_failure, name='payment_failure'),
+    path('initiate-payment/', views.initiate_payment, name='initiate_payment'),
+    path('payment-callback/', views.payment_callback, name='payment_callback'),
+    
     
     path('notifications/', views.notifications, name='notifications'),
     path('notifications/unread/', views.unread_notifications, name='get_unread_notifications'),
@@ -38,6 +37,11 @@ urlpatterns = [
     path('board/<int:board_pk>/new_post/', views.new_post, name='new_post'),
     
     path('chat/', views.chat, name='chat'),
+    
+    
+    path('upload_result/', views.upload_result, name='upload_result'),
+    path('student_results/<str:student_id>/', views.student_results, name='student_results'),
+    path('download_results/<str:student_id>/', views.download_results, name='download_results'),
     
     
 ]

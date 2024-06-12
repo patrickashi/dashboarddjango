@@ -15,7 +15,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 
 from .models import Profile
-from .models import Student
+from .models import Student, Result
 from .models import Feedback
 from .models import Notification
 from .models import Payment
@@ -29,6 +29,9 @@ from .forms import FeedbackForm
 from .forms import StudentUpdateForm
 from .forms import PaymentForm
 from .forms import PostForm, CommentForm
+from .forms import ResultForm
+
+import csv
 
 
 import requests
@@ -41,6 +44,9 @@ from django.middleware.csrf import get_token
 
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
 
 
 
@@ -174,80 +180,125 @@ def student_subject_view (request):
     return render(request, 'dashboard/profile.html', {'favourite_subject' : favourite_subject})
 
 
-logger = logging.getLogger(__name__)
 # payment
-def payment_form(request):
+# def payment_form(request):
+#     if request.method == 'POST':
+#         form = PaymentForm(request.POST)
+#         if form.is_valid():
+#             payment = form.save(commit=False)
+#             payment.transaction_ref = str(uuid.uuid4())  # Generate a unique transaction reference
+#             payment.save()
+#             return redirect('process_payment', payment_id=payment.id)
+#         else:
+#             logger.error(f"Form errors: {form.errors}")
+#     else:
+#         form = PaymentForm()
+#     return render(request, 'dashboard/payment_form.html', {'form': form})
+logger = logging.getLogger(__name__)
+@csrf_exempt
+# processpayment
+
+
+def initiate_payment(request):
+    if not request.user.is_authenticated:
+        return redirect('login')  # Ensure user is logged in
+
     if request.method == 'POST':
         form = PaymentForm(request.POST)
         if form.is_valid():
-            payment = form.save(commit=False)
-            payment.transaction_ref = str(uuid.uuid4())  # Generate a unique transaction reference
-            payment.save()
-            return redirect('process_payment', payment_id=payment.id)
-        else:
-            logger.error(f"Form errors: {form.errors}")
+            amount = form.cleaned_data['amount']
+            transaction_id = str(uuid.uuid4())
+            # Save the initial payment record
+            payment = Payment.objects.create(
+                user=request.user,
+                transaction_id=transaction_id,
+                amount=amount,
+                status='Pending'
+            )
+            # Correct Opay API endpoint and payload
+            url = "https://sandboxapi.opaycheckout.com/api/v1/international/payment/create"  # Verify this with Opay documentation
+            payload = {
+                "authoriseAmount": {
+                    "currency": "NGN",  # Assuming NGN, change if needed
+                    "total": int(amount * 100)  # Amount should be in kobo (or smallest currency unit)
+                },
+                "bankcard": {
+                    "cardHolderName": "David",  # Replace with actual card holder name
+                    "cardNumber": "5123450000000008",  # Replace with actual card number
+                    "cvv": "100",  # Replace with actual CVV
+                    "enable3DS": True,
+                    "expiryMonth": "01",  # Replace with actual expiry month
+                    "expiryYear": "39"  # Replace with actual expiry year
+                },
+                "callbackUrl": request.build_absolute_uri('/payment-callback/'),
+                "country": "NG",  # Replace with actual country code
+                "manualCapture": True,
+                "payMethod": "BankCard",
+                "product": {
+                    "description": "Payment for course registration",  # Replace with actual product description
+                    "name": "Course Registration"  # Replace with actual product name
+                },
+                "reference": transaction_id,
+                "returnUrl": request.build_absolute_uri('/payment_callback/'),
+                "userClientIP": request.META.get('REMOTE_ADDR'),
+                "userInfo": {
+                    "userEmail": request.user.email,  # User email
+                    "userId": str(request.user.id),  # User ID
+                    # "userMobile": request.user.profile.phone_number,  # Assuming you have phone_number in profile
+                    "userName": request.user.first_name  # User first name
+                }
+            }
+            headers = {
+                "Authorization": f"Bearer {settings.OPAY_SECRET_KEY}",
+                "MerchantId": settings.OPAY_MERCHANT_ID
+            }
+            try:
+                response = requests.post(url, json=payload, headers=headers)
+                logger.info(f"Opay response status code: {response.status_code}")
+                logger.info(f"Opay response content: {response.content}")
+                
+                if response.status_code == 200:
+                    response_data = response.json()
+                    logger.info(f"Opay response data: {response_data}")
+
+                    # Check if checkoutUrl is in the response data
+                    checkout_url = response_data.get('checkoutUrl')
+
+                    if checkout_url:
+                        return redirect(checkout_url)
+                    print(checkout_url)
+                    return render(request, 'dashboard/payment_error.html', {'message': 'No checkout URL found in Opay response.'})
+                else:
+                    # Log detailed error information
+                    logger.error(f"Authentication failed: {response.content}")
+                    return render(request, 'dashboard/payment_error.html', {'message': f'Failed to initiate payment with Opay. Authentication failed. Please check your API credentials and try again.'})
+            except requests.exceptions.RequestException as e:
+                logger.error(f"Request Exception occurred while initiating payment: {e}")
+                return render(request, 'dashboard/payment_error.html', {'message': 'Error occurred during payment initiation. Please try again later.'})
+            except Exception as e:
+                logger.error(f"Exception occurred while initiating payment: {e}")
+                return render(request, 'dashboard/payment_error.html', {'message': f'Exception occurred: {str(e)}'})
     else:
         form = PaymentForm()
-    return render(request, 'dashboard/payment_form.html', {'form': form})
+    return render(request, 'dashboard/initiate_payment.html', {'form': form})
 
-@csrf_exempt
-# processpayment
-def process_payment(request, payment_id):
-    try:
-        payment = Payment.objects.get(id=payment_id)
-        payment_data = {
-            "tx_ref": payment.transaction_ref,
-            "amount": str(payment.amount),
-            "currency": "NGN",
-            "redirect_url": request.build_absolute_uri('/payment-success/'),
-            "payment_options": "card",
-            "meta": {
-                "consumer_id": payment.id,
-                "consumer_mac": "92a3-912ba-1192a"
-            },
-            "customer": {
-                "email": payment.email,
-                "phonenumber": payment.phone_number,
-                "name": payment.name
-            },
-            "customizations": {
-                "title": "School Fees Payment",
-                "description": payment.description,
-                "logo": "https://yourlogo.com/logo.png"
-            }
-        }
 
-        headers = {
-            'Authorization': f'Bearer {settings.FLUTTERWAVE_SECRET_KEY}',
-            'Content-Type': 'application/json',
-        }
-
-        response = requests.post('https://api.flutterwave.com/v3/payments', json=payment_data, headers=headers)
-        if response.status_code == 200:
-            response_data = response.json()
-            payment_url = response_data.get('data', {}).get('link')
-            if payment_url:
-                return redirect(payment_url)
-            else:
-                return HttpResponse("Payment initiation failed", status=500)
-        else:
-            return HttpResponse(f"An error occurred: {response.text}", status=500)
-    except Exception as e:
-        return HttpResponse(f"An unexpected error occurred: {str(e)}", status=500)
-
-def payment_success(request):
-    tx_ref = request.GET.get('tx_ref')
-    try:
-        payment = Payment.objects.get(transaction_ref=tx_ref)
-        payment.status = 'successful'
+def payment_callback(request):
+    if request.method == 'POST':
+        transaction_id = request.POST.get('orderId')
+        status = request.POST.get('status')
+        payment = Payment.objects.get(transaction_id=transaction_id)
+        payment.status = status
         payment.save()
-        return render(request, 'payment_success.html')
-    except Payment.DoesNotExist:
-        logger.error(f"Payment with transaction reference {tx_ref} does not exist")
-        return HttpResponse("Payment not found", status=404)
+        if status == 'SUCCESS':
+            # Handle successful payment
+            pass
+        elif status == 'FAILED':
+            # Handle failed payment
+            pass
+    return render(request, 'dashboard/payment_callback.html')
 
-def payment_failure(request):
-    return render(request, 'payment_failure.html')
+
 
 
 #notifications
@@ -342,3 +393,50 @@ def new_post(request, board_pk):
 # chat
 def chat(request):
     return render(request, 'dashboard/chat.html')
+
+
+
+def upload_result(request):
+    if request.method == 'POST':
+        form = ResultForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('upload_result')
+    else:
+        form = ResultForm()
+    return render(request, 'dashboard/upload_result.html', {'form': form})
+
+def student_results(request, student_id):
+    student = get_object_or_404(Student, student_id=student_id)
+    results = Result.objects.filter(student=student)
+    return render(request, 'dashboard/student_results.html', {'student': student, 'results': results})
+
+
+def download_results(request, student_id):
+    student = Student.objects.get(student_id=student_id)
+    results = Result.objects.filter(student=student)
+
+    # Get the first name from the associated User object
+    first_name = student.user.first_name
+
+    # Create PDF response
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{first_name}_results.pdf"'
+
+    # Create PDF document
+    c = canvas.Canvas(response, pagesize=letter)
+    c.drawString(100, 750, f"Results for {first_name}")  # Title
+    y = 700  # Initial y-coordinate for content
+
+    # Write results data to PDF
+    for result in results:
+        y -= 20  # Move down 20 units for each row
+        c.drawString(100, y, f"Semester: {result.semester}")
+        c.drawString(200, y, f"Code: {result.code}")
+        c.drawString(300, y, f"Load: {result.load}")
+        c.drawString(400, y, f"Title: {result.title}")
+        c.drawString(500, y, f"Grade: {result.grade}")
+
+    # Save PDF document
+    c.save()
+    return response
