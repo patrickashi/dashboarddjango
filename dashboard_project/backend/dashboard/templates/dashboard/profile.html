@@ -22,19 +22,21 @@
         <form method="post" enctype="multipart/form-data" class="mt-4">
             {% csrf_token %}
             {{ profile_form }}
-            <button type="submit" class="bg-[#925FE2] hover:bg-[#855cc8] duration-200 text-white rounded-sm mt-2 px-8 ">Save</button>
+            <button type="submit" class="bg-[#925FE2] hover:bg-[#855cc8] duration-200 text-white rounded-sm mt-2 px-8 py-2">Save</button>
         </form>
     </div>
 
     <div class="bg-white rounded-xl px-4 py-4 cursor-pointer">
         <p class="font-bold mb-4">Information</p>
-        <p>username: {{ user.username }}</p>
-        <p>Email: {{ user.email }}</p>
-        <p>School Name: {{ user.profile.school_name }}</p>
-        <p>Favorite Subject: {{ favorite_subject }}</p>
+        <p>Name: {{ student.name }}</p>
+        <p>Student ID: {{ student.student_id }}</p>
+        <p>School Name: {{ student.school_name }}</p>
+        <p>Favorite Subject: {{ student.favorite_subject }}</p>
         <!-- Add any other fields you want to display -->
 
-        <a href="{% url 'update_profile' %}" class="btn btn-primary mt-3">Update Profile</a>
+        <div class="mt-4">
+            <a href="{% url 'update_profile' %}" class="bg-[#925FE2] hover:bg-[#855cc8] duration-200 text-white rounded-sm px-4 py-2 ">Update Profile</a>
+        </div>
     </div>
 
 </div>

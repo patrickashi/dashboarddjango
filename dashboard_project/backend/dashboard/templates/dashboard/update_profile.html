@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <div class="container mt-5">
-    <h2>Update Profile</h2>
+  <div class="mt-4">
+    <h1 class="font-semibold mb-4">Update Profile</h1>
     <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
       {{ form.as_p }}
-      <button type="submit" class="btn btn-primary">Save</button>
+      <button type="submit" class="bg-[#925FE2] hover:bg-[#855cc8] duration-200 text-white rounded-sm px-4 py-2 mt-4">Save</button>
     </form>
   </div>
 {% endblock %}

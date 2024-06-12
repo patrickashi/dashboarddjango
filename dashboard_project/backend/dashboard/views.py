@@ -180,20 +180,6 @@ def student_subject_view (request):
     return render(request, 'dashboard/profile.html', {'favourite_subject' : favourite_subject})
 
 
-# payment
-# def payment_form(request):
-#     if request.method == 'POST':
-#         form = PaymentForm(request.POST)
-#         if form.is_valid():
-#             payment = form.save(commit=False)
-#             payment.transaction_ref = str(uuid.uuid4())  # Generate a unique transaction reference
-#             payment.save()
-#             return redirect('process_payment', payment_id=payment.id)
-#         else:
-#             logger.error(f"Form errors: {form.errors}")
-#     else:
-#         form = PaymentForm()
-#     return render(request, 'dashboard/payment_form.html', {'form': form})
 logger = logging.getLogger(__name__)
 @csrf_exempt
 # processpayment

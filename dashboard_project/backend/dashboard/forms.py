@@ -33,7 +33,7 @@ class StudentProfileForm(forms.ModelForm):
 class StudentUpdateForm(forms.ModelForm):
     class Meta:
         model = Student
-        fields = ['school_name', 'favorite_subject', 'profile_photo']
+        fields = ['name', 'school_name', 'favorite_subject', 'profile_photo']
         
         
         
