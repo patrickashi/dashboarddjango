@@ -43,6 +43,11 @@ urlpatterns = [
     path('student_results/<str:student_id>/', views.student_results, name='student_results'),
     path('download_results/<str:student_id>/', views.download_results, name='download_results'),
     
+    path('hostel-form/', views.hostel_form, name='hostel_form'),
+    path('hostel/', views.hostel, name='hostel'),
+    
+    path('forms/', views.forms, name='forms'),
+    
     
 ]
 

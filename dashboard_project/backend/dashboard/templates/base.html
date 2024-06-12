@@ -39,30 +39,24 @@
     
      <ul class=" text-center">
 
-        <li class="my-4 " ><a href="{% url 'dashboard' %}" class="hover:font-semibold duration-200" >Dashboard</a></li>
+        <li class="my-4 " >
+            <div></div>
+            <a href="{% url 'dashboard' %}" class="hover:font-semibold duration-200" >Dashboard</a>
+        </li>
         <li class="my-4"><a href="{% url 'profile' %}" class="hover:font-semibold duration-200">Profile</a></li>
-        <li class="my-4"><a href="{% url 'submit_feedback' %}" class="hover:font-semibold duration-200">Submit Feedback</a></li>
-        <li class="my-4"><a href="{% url 'view_feedback' %}" class="hover:font-semibold duration-200">View Feedback</a></li>
-        <li class="my-4"><a href="{% url 'initiate_payment' %}" class="hover:font-semibold duration-200">Make Payment</a></li>
+        <!-- <li class="my-4"><a href="{% url 'submit_feedback' %}" class="hover:font-semibold duration-200">Submit Feedback</a></li>
+        <li class="my-4"><a href="{% url 'view_feedback' %}" class="hover:font-semibold duration-200">View Feedback</a></li> -->
+        <li class="my-4"><a href="{% url 'initiate_payment' %}" class="hover:font-semibold duration-200">Payments</a></li>
+        <li class="my-4"><a href="{% url 'forms' %}" class="hover:font-semibold duration-200">Forms</a></li>
+        <li class="my-4"> <a href="{% url 'hostel' %}" class="hover:font-semibold duration-200">Hostels</a></li>
 
-        <!-- <li>
-            <a href="{% url 'notifications' %}" class="nav-link">
-                <i class="bi bi-bell"></i>
-                {% if unread_count > 0 %}
-                    <span class="badge badge-pill badge-danger" id="notification-badge">{{ unread_count }}</span>
-                {% else %}
-                    <span class="badge badge-pill badge-danger" id="notification-badge" style="display: none;">0</span>
-                {% endif %}
-            </a>
-        </li> -->
-
-        <li class="my-4">
+        <!-- <li class="my-4">
             <a class=" hover:font-semibold duration-200" href="{% url 'discussion_board_list' %} ">Discussion boards</a>
         </li>
 
         <li class="my-4 ">
             <a class="hover:font-semibold duration-200" href="{% url 'chat' %}">Community</a>
-        </li>
+        </li> -->
 
         <!-- <li>
             <a href="{% url 'upload_result' %}" class="text-blue-500 hover:text-blue-700">Upload Result</a>
@@ -133,7 +127,7 @@
 
                 <div class="py-0 ml-1 text-center items-center text-xs">
                     <p class=" font-thin">{{ user.first_name }}</p>
-                    <p class=" font-thin">3rd year</p>
+                    <p class=" font-thin"> {{ student.level }}lv</p>
                 </div>
 
             </div>

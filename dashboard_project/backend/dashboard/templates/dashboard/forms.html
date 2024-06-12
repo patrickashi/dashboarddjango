@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class=" p-4">
+    <h1 class="text-2xl font-semibold mb-4">Forms</h1>
+    <div class="flex flex-wrap">
+        
+        <a href="{% url 'hostel_form' %}" class="hover:cursor-pointer">
+            <div  class="bg-white rounded-md px-10 py-10 mb-4 mr-4">
+                <p class="font-semibold">Hostel</p>
+                <p>Get the form to get a space in the School's hostel</p>
+            </div>
+        </a>
+        
+        <div  class="bg-white rounded-md px-10 py-10 mb-4 mr-4">
+            <p class="font-semibold">Graduation Clearance</p>
+            <p>Lorem ipsum dolor sit amet consectetur.</p>
+        </div>
+        <div  class="bg-white rounded-md px-10 py-10 mb-4 mr-4">
+            <p class="font-semibold">Clinic</p>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing.</p>
+        </div>
+        <div  class="bg-white rounded-md px-10 py-10 mb-4 mr-4">
+            <p class="font-semibold">Sports</p>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+        </div>
+        <div  class="bg-white rounded-md px-10 py-10 mb-4 mr-4">
+            <p class="font-semibold">SIWIS</p>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. At.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

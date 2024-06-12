@@ -7,6 +7,7 @@ from .models import Feedback
 from .models import Payment
 from .models import Post, Comment
 from .models import Result
+from .models import Hostel
 
 class RegistrationForm(UserCreationForm):
     
@@ -33,7 +34,8 @@ class StudentProfileForm(forms.ModelForm):
 class StudentUpdateForm(forms.ModelForm):
     class Meta:
         model = Student
-        fields = ['name', 'school_name', 'favorite_subject', 'profile_photo']
+        fields = ['name', 'school_name', 'favorite_subject', 'date_of_birth', 'gender', 'marital_status', 'nationality', 'state_of_origin',
+                  'lga', 'phone_number', 'email', 'address', 'profile_photo']
         
         
         
@@ -67,3 +69,10 @@ class ResultForm(forms.ModelForm):
     class Meta:
         model = Result
         fields = ['student', 'semester', 'code', 'load', 'title', 'grade']
+        
+        
+class HostelForm(forms.ModelForm):
+    class Meta:
+        model = Hostel
+        fields = ['chosen_hostel', 'chosen_floor', 'room', 'bed_space']
+        widgets = {'student': forms.HiddenInput()}

@@ -26,13 +26,88 @@
         </form>
     </div>
 
-    <div class="bg-white rounded-xl px-4 py-4 cursor-pointer">
+    <div class="bg-white rounded-xl px-4 py-4 cursor-pointer ">
         <p class="font-bold mb-4">Information</p>
-        <p>Name: {{ student.name }}</p>
-        <p>Student ID: {{ student.student_id }}</p>
-        <p>School Name: {{ student.school_name }}</p>
-        <p>Favorite Subject: {{ student.favorite_subject }}</p>
-        <!-- Add any other fields you want to display -->
+
+        <div class="flex flex-col lg:flex-row gap-2">
+            <div>
+                <div class="mb-2">
+                    <p class="font-thin">Name</p>
+                    <p class="font-semibold">{{ student.name }}</p>
+                </div>
+                <div class="mb-2">
+                    <p class="font-thin">Student ID</p>
+                    <p class="font-semibold">{{ student.student_id }}</p>
+                </div>
+                <div class="mb-2">
+                    <p class="font-thin">School Name</p>
+                    <p class="font-semibold">{{ student.school_name }}</p>
+                </div>
+                <div class="mb-2">
+                    <p class="font-thin">Favorite Subject</p>
+                    <p class="font-semibold"> {{ student.favorite_subject }}</p>
+                </div>
+            </div>
+            <div>
+                <div class="mb-2">
+                    <p class="font-thin">Level</p>
+                    <p class="font-semibold">{{ student.level }}</p>
+                </div>
+                <div class="mb-2">
+                    <p class="font-thin">Faculty</p>
+                    <p class="font-semibold">{{ student.faculty }}</p>
+                </div>
+                <div class="mb-2">
+                    <p class="font-thin">Department</p>
+                    <p class="font-semibold">{{ student.department }}</p>
+                </div>
+                <div class="mb-2">
+                    <p class="font-thin">Date of Birth</p>
+                    <p class="font-semibold">{{ student.date_of_birth }}</p>
+                </div>
+            </div>
+            <div>
+                <div class="mb-2">
+                    <p class="font-thin">Gender</p>
+                    <p class="font-semibold">{{ student.gender }}</p>
+                </div>
+                <div class="mb-2">
+                    <p class="font-thin">Marital Status</p>
+                    <p class="font-semibold">{{ student.marital_status }}</p>
+                </div>
+                <div class="mb-2">
+                    <p class="font-thin">Nationality</p>
+                    <p class="font-semibold">{{ student.nationality }}</p>
+                </div>
+                <div class="mb-2">
+                    <p class="font-thin">State of Origin</p>
+                    <p class="font-semibold">{{ student.state_of_origin }}</p>
+                </div>
+            </div>
+            <div>
+                <div class="mb-2">
+                    <p class="font-thin">LGA</p>
+                    <p class="font-semibold">{{ student.lga }}</p>
+                </div>
+                <div class="mb-2">
+                    <p class="font-thin">Email</p>
+                    <p class="font-semibold">{{ student.email }}</p>
+                </div>
+                <div class="mb-2">
+                    <p class="font-thin">Phone Number</p>
+                    <p class="font-semibold">{{ student.phone_number }}</p>
+                </div>
+                <div class="mb-2">
+                    <p class="font-thin">Address</p>
+                    <p class="font-semibold">{{ student.address }}</p>
+                </div>
+                <!-- Add any other fields you want to display -->
+            </div>
+        </div>
+        
+        
+        
+        
 
         <div class="mt-4">
             <a href="{% url 'update_profile' %}" class="bg-[#925FE2] hover:bg-[#855cc8] duration-200 text-white rounded-sm px-4 py-2 ">Update Profile</a>

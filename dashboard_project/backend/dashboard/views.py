@@ -16,10 +16,12 @@ from django.contrib.auth import authenticate, login
 
 from .models import Profile
 from .models import Student, Result
-from .models import Feedback
 from .models import Notification
 from .models import Payment
 from .models import DiscussionBoard, Post, Comment
+from .models import Hostel
+from .models import Feedback
+
 
 
 from django.contrib.auth.forms import AuthenticationForm
@@ -30,6 +32,7 @@ from .forms import StudentUpdateForm
 from .forms import PaymentForm
 from .forms import PostForm, CommentForm
 from .forms import ResultForm
+from .forms import HostelForm
 
 import csv
 
@@ -119,13 +122,12 @@ def dashboard(request):
     firstname = request.user.first_name
     username = request.user.username  # Get the username of the logged-in user
     try:
-        student = Profile.objects.get(user=request.user)
+        student = Student.objects.get(user=request.user)
     except Profile.DoesNotExist:
         student = None  # or handle this case appropriately
         
-    feedbacks = Feedback.objects.all().order_by('-created_at')
         
-    context = { 'username': username, 'firstname': firstname, 'student': student, 'feedbacks': feedbacks}
+    context = { 'username': username, 'firstname': firstname, 'student': student}
     return render(request, 'dashboard/dashboard.html', context)
 
 
@@ -426,3 +428,26 @@ def download_results(request, student_id):
     # Save PDF document
     c.save()
     return response
+
+def hostel_form(request):
+    student = Student.objects.get(user=request.user)  # Assuming you have a way to get the current student
+
+    if request.method == 'POST':
+        form = HostelForm(request.POST)
+        if form.is_valid():
+            hostel = form.save(commit=False)
+            hostel.student = student
+            hostel.save()
+            return redirect('hostel')  # Redirect to a success page or any other page
+    else:
+        form = HostelForm()
+    return render(request, 'dashboard/hostel_form.html', {'form': form})
+
+
+def hostel(request):
+    student = Student.objects.get(user=request.user)
+    hostel = Hostel.objects.filter(student=student).first()  # Assuming each student can have only one hostel entry
+    return render(request, 'dashboard/hostel.html', {'hostel': hostel})
+
+def forms(request):
+    return render(request, 'dashboard/forms.html')

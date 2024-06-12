@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class=" p-4 bg-white rounded-lg mt-4">
+    <h1 class="text-2xl font-semibold mb-4">Hostel Details</h1>
+    {% if hostel %}
+        <div class="mb-4">
+            <p class="text-sm">Chosen Hostel</p>
+            <h1 class="font-semibold">{{ hostel.chosen_hostel }}</h1>
+        </div>
+
+        <div class="mb-4">
+            <p class="text-sm">Chosen Floor</p>
+            <h1 class="font-semibold">{{ hostel.chosen_floor }}</h1>
+        </div>
+
+        <div class="mb-4">
+            <p class="text-sm">Room</p>
+            <h1 class="font-semibold">{{ hostel.room }}</h1>
+        </div>
+
+        <div class="mb-4">
+            <p class="text-sm">Bed Space</p>
+            <h1 class="font-semibold">{{ hostel.bed_space }}</h1>
+        </div>
+        
+    {% else %}
+        <p>You have not chosen a hostel yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

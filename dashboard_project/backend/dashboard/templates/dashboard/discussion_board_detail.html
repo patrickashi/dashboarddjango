@@ -2,13 +2,15 @@
 
 {% block content %}
 <div class="container">
-    <h2>{{ board.name }}</h2>
-    <p>{{ board.description }}</p>
-    <a href="{% url 'new_post' board_pk=board.pk %}" class="btn btn-primary">New Post</a>
+    <h2>Name: {{ board.name }}</h2>
+    <p>Content: {{ board.description }}</p>
+    <div class=" mt-4">
+        <a href="{% url 'new_post' board_pk=board.pk %}" class="bg-[#925FE2] hover:bg-[#855cc8] duration-200 text-white rounded-sm px-4 py-2">New Post</a>
+    </div>
     <ul class="list-group mt-4">
         {% for post in posts %}
             <li class="list-group-item">
-                <a href="{% url 'post_detail' board_pk=board.pk post_pk=post.pk %}">{{ post.title }}</a>
+                <a href="{% url 'post_detail' board_pk=board.pk post_pk=post.pk %} " class="hover:underline">{{ post.title }}</a>
                 <p>by {{ post.author }}</p>
             </li>
         {% endfor %}

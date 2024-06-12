@@ -9,6 +9,7 @@ from .models import DiscussionBoard
 from .models import Post
 from .models import Comment
 from .models import Result
+from .models import Hostel
 
 # Register your models here.
 admin.site.register(Student)
@@ -20,6 +21,7 @@ admin.site.register(DiscussionBoard)
 admin.site.register(Post)
 admin.site.register(Comment)
 admin.site.register(Result)
+admin.site.register(Hostel)
 
 #unregister groups
 admin.site.unregister(Group)
