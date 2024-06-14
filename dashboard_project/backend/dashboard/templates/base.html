@@ -16,7 +16,7 @@
 
 <body class="h-[100vh]">
 
-    <button  id="toggle-button" class="block md:hidden text-white focus:outline-none z-50 fixed text-xl top-20 right-0 bg-[#925FE2]  px-4 py-4 rounded-l-md">☰</button>
+    <button  id="toggle-button" class="block md:hidden text-white focus:outline-none z-50 fixed text-xl top-20 right-0 bg-[#925FE2]  px-4 py-4 rounded-l-md" aria-expanded="false">☰</button>
 <!-- sidebar and maincontent box -->
  <div class="flex max-h-full relative h-[100vh]">
     
@@ -37,18 +37,40 @@
 
         <h2 class=" text-center  hover:text-emerald-400 cursor-pointer animate-pulse font-bold duration-200">{{ user.username }}</h1>
     
-     <ul class=" text-center">
+     <ul class=" text-center ">
 
         <li class="my-4 " >
-            <div></div>
-            <a href="{% url 'dashboard' %}" class="hover:font-semibold duration-200" >Dashboard</a>
+            <a href="{% url 'dashboard' %}" class="hover:font-semibold duration-200 flex justify-center items-center" >
+                <img src="{% static 'images/dashboard_icon.png' %}" alt="db" class="w-3 h-3 mr-2" width="25px">
+                Dashboard
+            </a>
         </li>
-        <li class="my-4"><a href="{% url 'profile' %}" class="hover:font-semibold duration-200">Profile</a></li>
+        <li class="my-4">
+            <a href="{% url 'profile' %}" class="hover:font-semibold duration-200 flex justify-center items-center">
+                <img src="{% static 'images/profile_icon.png' %}" alt="pI" class="w-3 h-3 mr-2" width="25px">
+                Profile
+            </a>
+        </li>
         <!-- <li class="my-4"><a href="{% url 'submit_feedback' %}" class="hover:font-semibold duration-200">Submit Feedback</a></li>
         <li class="my-4"><a href="{% url 'view_feedback' %}" class="hover:font-semibold duration-200">View Feedback</a></li> -->
-        <li class="my-4"><a href="{% url 'initiate_payment' %}" class="hover:font-semibold duration-200">Payments</a></li>
-        <li class="my-4"><a href="{% url 'forms' %}" class="hover:font-semibold duration-200">Forms</a></li>
-        <li class="my-4"> <a href="{% url 'hostel' %}" class="hover:font-semibold duration-200">Hostels</a></li>
+        <li class="my-4">
+            <a href="{% url 'initiate_payment' %}" class="hover:font-semibold duration-200 flex justify-center items-center">
+                <img src="{% static 'images/payment_icon.png' %}" alt="pm" class="w-3 h-3 mr-2" width="25px">
+                <div>Payments</div>
+            </a>
+        </li>
+        <li class="my-4">
+            <a href="{% url 'forms' %}" class="hover:font-semibold duration-200 flex justify-center items-center">
+                <img src="{% static 'images/profile_icon.png' %}" alt="fm" class="w-3 h-3 mr-2" width="30px">
+                Forms
+            </a>
+        </li>
+        <li class="my-4"> 
+            <a href="{% url 'hostel' %}" class="hover:font-semibold duration-200 flex justify-center items-center">
+                <img src="{% static 'images/hostel_icon.png' %}" alt="hst" class="w-3 h-3 mr-2" width="30px">
+                Hostels
+            </a>
+        </li>
 
         <!-- <li class="my-4">
             <a class=" hover:font-semibold duration-200" href="{% url 'discussion_board_list' %} ">Discussion boards</a>
@@ -63,13 +85,19 @@
         </li> -->
 
         <li>
-            <a href="{% url 'student_results' student_id=request.user.student.student_id %}" class="hover:font-semibold duration-200">Results</a>
+            <a href="{% url 'student_results' student_id=request.user.student.student_id %}" class="hover:font-semibold duration-200 flex justify-center items-center">
+                <img src="{% static 'images/result_icon.png' %}" alt="rst" class="w-3 h-3 mr-2" width="30px">
+                Results
+            </a>
         </li>
 
         
 
         <li class="my-4"> 
-            <a href="#" target="_blank" class="hover:font-semibold duration-200">Back to Website</a>
+            <a href="#" target="_blank" class="hover:font-semibold duration-200 flex justify-center items-center">
+                <img src="{% static 'images/back_icon.png' %}" alt="rst" class="w-3 h-3 mr-2" width="30px">
+                Back to Website
+            </a>
         </li>
 
       
@@ -80,7 +108,10 @@
      <div class="my-4 flex justify-center align-bottom">
         <form method="POST" action="{% url 'logout' %}">
             {% csrf_token %}
-            <button type="submit" class="hover:font-semibold duration-200">Logout</button>
+            <div class="flex items-center">
+                <img src="{% static 'images/logout_icon.png' %}" alt="lg" class="w-3 h-3 mr-2" width="25px">
+                <button type="submit" class="hover:font-semibold duration-200">Logout</button>
+            </div>
         </form>
     </div>
    
@@ -160,6 +191,15 @@
             toggleButton.addEventListener("click", function() {
                 console.log('Toggle button clicked'); // Debugging line
                 sidebar.classList.toggle("-translate-x-full");
+
+                // Toggle the button content
+                if (sidebar.classList.contains("-translate-x-full")) {
+                    toggleButton.innerHTML = "☰"; // Hamburger icon
+                    toggleButton.setAttribute("aria-expanded", "false");
+                } else {
+                    toggleButton.innerHTML = "<span style='color: white;'>✖</span>"; // Close icon with white color
+                    toggleButton.setAttribute("aria-expanded", "true");
+                }
             });
         });
 

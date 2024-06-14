@@ -50,6 +50,9 @@ from django.views.decorators.csrf import csrf_exempt
 
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
 
 
 
@@ -190,6 +193,8 @@ logger = logging.getLogger(__name__)
 def initiate_payment(request):
     if not request.user.is_authenticated:
         return redirect('login')  # Ensure user is logged in
+    
+    student = Student.objects.get(user=request.user)
 
     if request.method == 'POST':
         form = PaymentForm(request.POST)
@@ -268,7 +273,7 @@ def initiate_payment(request):
                 return render(request, 'dashboard/payment_error.html', {'message': f'Exception occurred: {str(e)}'})
     else:
         form = PaymentForm()
-    return render(request, 'dashboard/initiate_payment.html', {'form': form})
+    return render(request, 'dashboard/initiate_payment.html', {'form': form, 'student': student})
 
 
 def payment_callback(request):
@@ -412,21 +417,35 @@ def download_results(request, student_id):
     response['Content-Disposition'] = f'attachment; filename="{first_name}_results.pdf"'
 
     # Create PDF document
-    c = canvas.Canvas(response, pagesize=letter)
-    c.drawString(100, 750, f"Results for {first_name}")  # Title
-    y = 700  # Initial y-coordinate for content
+    doc = SimpleDocTemplate(response, pagesize=letter)
+    elements = []
 
-    # Write results data to PDF
+    # Title
+    title = f"Results for {first_name}"
+    elements.append(Paragraph(title, getSampleStyleSheet()['Title']))
+
+    # Table data
+    data = [['Semester', 'Code', 'Load', 'Title', 'Grade']]
     for result in results:
-        y -= 20  # Move down 20 units for each row
-        c.drawString(100, y, f"Semester: {result.semester}")
-        c.drawString(200, y, f"Code: {result.code}")
-        c.drawString(300, y, f"Load: {result.load}")
-        c.drawString(400, y, f"Title: {result.title}")
-        c.drawString(500, y, f"Grade: {result.grade}")
+        data.append([result.semester, result.code, result.load, result.title, result.grade])
 
-    # Save PDF document
-    c.save()
+    # Create table
+    table = Table(data)
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#925FE2")),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]))
+
+    elements.append(table)
+
+    # Build PDF document
+    doc.build(elements)
     return response
 
 def hostel_form(request):
@@ -447,7 +466,9 @@ def hostel_form(request):
 def hostel(request):
     student = Student.objects.get(user=request.user)
     hostel = Hostel.objects.filter(student=student).first()  # Assuming each student can have only one hostel entry
-    return render(request, 'dashboard/hostel.html', {'hostel': hostel})
+    
+    return render(request, 'dashboard/hostel.html', {'hostel': hostel, 'student': student})
 
 def forms(request):
-    return render(request, 'dashboard/forms.html')
+    student = Student.objects.get(user=request.user)
+    return render(request, 'dashboard/forms.html', {'student': student})
